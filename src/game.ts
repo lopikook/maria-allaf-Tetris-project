@@ -12,7 +12,7 @@ export type GameState = {
   score: number,                   
   linesCleared: number,            
   level: number,                   
-  dropInterval: number,            
+  dropInterval: number,        
   paused: boolean,                 
   gameOver: boolean                
 };
