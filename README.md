@@ -78,7 +78,7 @@ Touches :
 
 ## Installation & lancement
 
-1. Cloner le dépôt
+1. Cloner le dépôt sur Git Bash ou sur une invite de commande.
 ```bash
 git clone https://github.com/lopikook/maria-allaf-Tetris-project.git
 cd maria-allaf-Tetris-project
