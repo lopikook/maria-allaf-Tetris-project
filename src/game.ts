@@ -2,21 +2,19 @@ import { createGrid, collides, mergePiece, clearLines } from './grid';
 import { randomTetromino, rotate } from './tetromino';
 import type { Matrix } from './tetromino';
 
-/**
- * Représente l'état global d'une partie de Tetris.
- */
+
 export type GameState = {
-  grid: Matrix,                    // Grille du jeu
-  currentPiece: Matrix,            // Pièce active
-  nextPiece: Matrix,               // Prochaine pièce
-  position: { x: number, y: number }, // Coordonnées de la pièce active
-  cols: number, rows: number,      // Dimensions de la grille
-  score: number,                   // Score actuel
-  linesCleared: number,            // Nombre total de lignes supprimées
-  level: number,                   // Niveau actuel
-  dropInterval: number,            // Temps (ms) entre chaque descente automatique
-  paused: boolean,                 // Pause du jeu
-  gameOver: boolean                // Fin de partie
+  grid: Matrix,             
+  currentPiece: Matrix,         
+  nextPiece: Matrix,               
+  position: { x: number, y: number }, 
+  cols: number, rows: number,      
+  score: number,                   
+  linesCleared: number,            
+  level: number,                   
+  dropInterval: number,            
+  paused: boolean,                 
+  gameOver: boolean                
 };
 
 /**

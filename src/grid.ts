@@ -1,5 +1,5 @@
 /**
- * Crée une grille vide (remplie de 0).
+ * Faut créer une grille vide qui va etre remplie de 0
  * @param rows nombre de lignes
  * @param cols nombre de colonnes
  */
@@ -7,10 +7,7 @@ export function createGrid(rows: number, cols: number): number[][] {
     return Array.from({ length: rows }, () => Array(cols).fill(0));
   }
   
-  /**
-   * Vérifie si une pièce donnée entre en collision avec la grille
-   * (murs, bas de la grille ou autres blocs).
-   */
+ 
   export function collides(
     grid: number[][],
     piece: number[][],
@@ -25,9 +22,9 @@ export function createGrid(rows: number, cols: number): number[][] {
           const newY = pos.y + y;
   
           if (
-            newX < 0 || newX >= cols || // en dehors des bords horizontaux
-            newY >= rows ||             // en dehors du bas
-            (newY >= 0 && grid[newY][newX] !== 0) // collision avec une case déjà remplie
+            newX < 0 || newX >= cols || //en dehors des bords horizontaux
+            newY >= rows ||             //en dehors du bas
+            (newY >= 0 && grid[newY][newX] !== 0) // ya collision avec une case déjà rempli
           ) {
             return true;
           }
@@ -37,9 +34,7 @@ export function createGrid(rows: number, cols: number): number[][] {
     return false;
   }
   
-  /**
-   * Fusionne une pièce tombée avec la grille (on la "pose").
-   */
+ 
   export function mergePiece(
     grid: number[][],
     piece: number[][],
@@ -72,7 +67,7 @@ export function createGrid(rows: number, cols: number): number[][] {
       grid.splice(y, 1);
       grid.unshift(Array(cols).fill(0));
       linesCleared++;
-      y++; // on revérifie la ligne qui vient d'être ajoutée
+      y++;
     }
   
     return linesCleared;
