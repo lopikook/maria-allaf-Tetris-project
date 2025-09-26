@@ -1,61 +1,46 @@
 export type Matrix = number[][];
 
-export const TETROMINOS: Record<string, Matrix> = {
-  I: [
-    [0,0,0,0],
-    [1,1,1,1],
-    [0,0,0,0],
-    [0,0,0,0]
-  ],
-  J: [
-    [2,0,0],
-    [2,2,2],
-    [0,0,0]
-  ],
-  L: [
-    [0,0,3],
-    [3,3,3],
-    [0,0,0]
-  ],
-  O: [
-    [4,4],
-    [4,4]
-  ],
-  S: [
-    [0,5,5],
-    [5,5,0],
-    [0,0,0]
-  ],
-  T: [
-    [0,6,0],
-    [6,6,6],
-    [0,0,0]
-  ],
-  Z: [
-    [7,7,0],
-    [0,7,7],
-    [0,0,0]
-  ]
+export type Tetromino = {
+  matrix: Matrix;
+  color: string;
+  type: string; // nom de la pièce : I, J, L, O, S, T, Z
 };
 
-export function cloneMatrix(m: Matrix): Matrix {
-  return m.map(row => row.slice());
+/**
+ * Liste des différentes pièces Tetris.
+ * Chaque pièce est une matrice (0 = vide, 1 = rempli).
+ */
+const TETROMINOS: Tetromino[] = [
+  { type: "I", matrix: [[1, 1, 1, 1]], color: "cyan" },
+  { type: "J", matrix: [[1, 0, 0], [1, 1, 1]], color: "blue" },
+  { type: "L", matrix: [[0, 0, 1], [1, 1, 1]], color: "orange" },
+  { type: "O", matrix: [[1, 1], [1, 1]], color: "yellow" },
+  { type: "S", matrix: [[0, 1, 1], [1, 1, 0]], color: "green" },
+  { type: "T", matrix: [[0, 1, 0], [1, 1, 1]], color: "purple" },
+  { type: "Z", matrix: [[1, 1, 0], [0, 1, 1]], color: "red" }
+];
+
+/**
+ * Renvoie une pièce aléatoire parmi la liste.
+ */
+export function randomTetromino(): Tetromino {
+  const index = Math.floor(Math.random() * TETROMINOS.length);
+  return JSON.parse(JSON.stringify(TETROMINOS[index])); // copie pour éviter les mutations
 }
 
-
+/**
+ * Fait tourner une pièce (90° dans le sens horaire).
+ */
 export function rotate(matrix: Matrix): Matrix {
-  const N = matrix.length;
-  const res: Matrix = Array.from({length: N}, () => new Array(N).fill(0));
-  for (let r = 0; r < matrix.length; r++) {
-    for (let c = 0; c < matrix[r].length; c++) {
-      res[c][N - 1 - r] = matrix[r][c];
+  const size = matrix.length;
+  const rotated: Matrix = [];
+
+  for (let x = 0; x < size; x++) {
+    rotated[x] = [];
+    for (let y = size - 1; y >= 0; y--) {
+      rotated[x][size - 1 - y] = matrix[y][x];
     }
   }
-  return res;
-}
 
-export function randomTetromino(): { matrix: Matrix, type: string } {
-  const types = Object.keys(TETROMINOS);
-  const t = types[Math.floor(Math.random() * types.length)];
-  return { matrix: cloneMatrix(TETROMINOS[t]), type: t };
+  return rotated;
 }

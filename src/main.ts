@@ -1,69 +1,116 @@
-import { initGame, softDrop, hardDrop, move, rotateCurrent } from './game';
-import { drawGrid, drawPiece } from './render';
-import './styles.css';
+import { initGame, softDrop, hardDrop, move, rotateCurrent } from "./game";
+import { drawGrid, drawPiece, drawNext } from "./render";
 
-const COLS = 10;
+const canvas = document.getElementById("tetris") as HTMLCanvasElement;
+const ctx = canvas.getContext("2d")!;
+
+// Taille d'une case (pixels)
+const BLOCK_SIZE = 30;
+
+// Dimensions du plateau en cases
 const ROWS = 20;
-const BLOCK = 30;
+const COLS = 10;
 
-const canvas = document.getElementById('game') as HTMLCanvasElement;
-canvas.width = COLS * BLOCK;
-canvas.height = ROWS * BLOCK;
-const ctx = canvas.getContext('2d')!;
-
-const scoreEl = document.getElementById('score')!;
-const linesEl = document.getElementById('lines')!;
-const levelEl = document.getElementById('level')!;
-const statusEl = document.getElementById('status')!;
-const resetBtn = document.getElementById('reset')!;
-
+// Initialisation de l'état du jeu
 let state = initGame(ROWS, COLS);
+
 let lastTime = 0;
 let dropCounter = 0;
 
-function updateUI() {
-  (scoreEl as HTMLElement).textContent = 'Score: ' + state.score;
-  (linesEl as HTMLElement).textContent = 'Lignes: ' + state.lines;
-  (levelEl as HTMLElement).textContent = 'Niveau: ' + state.level;
-  statusEl.textContent = state.gameOver ? 'Game Over' : (state.paused ? 'Paused' : '');
-}
-
-function tick(time = 0) {
-  if (state.paused || state.gameOver) {
-    lastTime = time;
-    requestAnimationFrame(tick);
-    return;
-  }
-  const delta = time - lastTime;
+/**
+ * Boucle principale du jeu (appelée via requestAnimationFrame).
+ */
+function update(time = 0) {
+  const deltaTime = time - lastTime;
   lastTime = time;
-  dropCounter += delta;
-  if (dropCounter > state.dropInterval) {
-    dropCounter = 0;
-    softDrop(state);
+
+  if (!state.paused && !state.gameOver) {
+    dropCounter += deltaTime;
+    if (dropCounter > state.dropInterval) {
+      softDrop(state);
+      dropCounter = 0;
+    }
   }
 
-  drawGrid(ctx, state.grid, BLOCK);
-  drawPiece(ctx, state.current, state.pos, BLOCK);
-  updateUI();
-  requestAnimationFrame(tick);
+  draw();
+
+  requestAnimationFrame(update);
 }
 
-document.addEventListener('keydown', (e) => {
+/**
+ * Dessine tout l’écran de jeu (grille, pièce active, prochaine pièce, score...).
+ */
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Dessin de la grille et de la pièce active
+  drawGrid(ctx, state.grid, BLOCK_SIZE);
+  drawPiece(ctx, state.currentPiece, state.position, BLOCK_SIZE);
+
+  // Affichage de la prochaine pièce
+  drawNext(state.nextPiece, BLOCK_SIZE);
+
+  // Score, lignes et niveau
+  const scoreEl = document.getElementById("score")!;
+  const linesEl = document.getElementById("lines")!;
+  const levelEl = document.getElementById("level")!;
+  scoreEl.textContent = state.score.toString();
+  linesEl.textContent = state.linesCleared.toString();
+  levelEl.textContent = state.level.toString();
+
+  // Affichage Game Over
+  if (state.gameOver) {
+    ctx.fillStyle = "rgba(0,0,0,0.7)";
+    ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 80);
+
+    ctx.fillStyle = "white";
+    ctx.font = "28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+  }
+}
+
+/**
+ * Gestion des touches clavier pour contrôler la pièce.
+ */
+document.addEventListener("keydown", (event) => {
   if (state.gameOver) return;
-  if (e.key === 'ArrowLeft') move(state, -1);
-  else if (e.key === 'ArrowRight') move(state, 1);
-  else if (e.key === 'ArrowDown') softDrop(state);
-  else if (e.key === 'ArrowUp') rotateCurrent(state);
-  else if (e.code === 'Space') hardDrop(state);
-  else if (e.key.toLowerCase() === 'p') state.paused = !state.paused;
-  updateUI();
+
+  switch (event.key) {
+    case "ArrowLeft":
+      move(state, -1);
+      break;
+    case "ArrowRight":
+      move(state, 1);
+      break;
+    case "ArrowDown":
+      softDrop(state);
+      dropCounter = 0;
+      break;
+    case " ":
+      hardDrop(state);
+      dropCounter = 0;
+      break;
+    case "ArrowUp":
+      rotateCurrent(state);
+      break;
+    case "p":
+    case "P":
+      state.paused = !state.paused;
+      break;
+  }
 });
 
-resetBtn.addEventListener('click', () => {
+/**
+ * Redémarre la partie quand on clique sur le bouton "Restart".
+ */
+document.getElementById("restart")?.addEventListener("click", () => {
   state = initGame(ROWS, COLS);
-  updateUI();
 });
 
-drawGrid(ctx, state.grid, BLOCK);
-drawPiece(ctx, state.current, state.pos, BLOCK);
-requestAnimationFrame(tick);
+/**
+ * Démarrage du jeu.
+ */
+canvas.width = COLS * BLOCK_SIZE;
+canvas.height = ROWS * BLOCK_SIZE;
+update();
