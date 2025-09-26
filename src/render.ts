@@ -1,36 +1,83 @@
-import { Matrix } from './tetromino';
+import type { Matrix } from "./tetromino";
 
-const COLORS = [
-  '#000000',
-  '#00f0f0', '#0000f0', '#f0a000', '#f0f000',
-  '#00f000', '#a000f0', '#f00000'
-];
-
-export function drawCell(ctx: CanvasRenderingContext2D, x:number, y:number, size:number, colorIndex:number) {
-  ctx.fillStyle = COLORS[colorIndex];
-  ctx.fillRect(x * size, y * size, size, size);
-  ctx.strokeStyle = '#222';
-  ctx.strokeRect(x * size, y * size, size, size);
-}
-
-export function drawGrid(ctx: CanvasRenderingContext2D, grid: Matrix, size:number) {
-  ctx.fillStyle = '#111';
-  ctx.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
-  for (let r = 0; r < grid.length; r++) {
-    for (let c = 0; c < grid[r].length; c++) {
-      drawCell(ctx, c, r, size, grid[r][c]);
-    }
-  }
-}
-
-export function drawPiece(ctx: CanvasRenderingContext2D, piece: Matrix, pos:{x:number,y:number}, size:number) {
-  for (let r = 0; r < piece.length; r++) {
-    for (let c = 0; c < piece[r].length; c++) {
-      if (piece[r][c] !== 0) {
-        const x = pos.x + c;
-        const y = pos.y + r;
-        if (y >= 0) drawCell(ctx, x, y, size, piece[r][c]);
+/**
+ * Dessine la grille de Tetris.
+ */
+export function drawGrid(ctx: CanvasRenderingContext2D, grid: Matrix, size: number) {
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[y].length; x++) {
+      const id = grid[y][x];
+      if (id !== 0) { // ne pas dessiner les cases vides
+        ctx.fillStyle = getColor(id);
+        ctx.fillRect(x * size, y * size, size, size);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(x * size, y * size, size, size);
       }
     }
   }
+}
+
+/**
+ * Dessine la pièce active.
+ */
+export function drawPiece(
+  ctx: CanvasRenderingContext2D,
+  piece: Matrix,
+  pos: { x: number; y: number },
+  size: number
+) {
+  for (let y = 0; y < piece.length; y++) {
+    for (let x = 0; x < piece[y].length; x++) {
+      const id = piece[y][x];
+      if (id !== 0) {
+        ctx.fillStyle = getColor(id);
+        ctx.fillRect((pos.x + x) * size, (pos.y + y) * size, size, size);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect((pos.x + x) * size, (pos.y + y) * size, size, size);
+      }
+    }
+  }
+}
+
+/**
+ * Dessine la prochaine pièce dans un petit canvas séparé.
+ */
+export function drawNext(next: Matrix, size: number) {
+  const canvasNext = document.getElementById("next") as HTMLCanvasElement;
+  const ctxNext = canvasNext.getContext("2d")!;
+  canvasNext.width = 6 * size;
+  canvasNext.height = 6 * size;
+
+  ctxNext.clearRect(0, 0, canvasNext.width, canvasNext.height);
+
+  for (let y = 0; y < next.length; y++) {
+    for (let x = 0; x < next[y].length; x++) {
+      const id = next[y][x];
+      if (id !== 0) {
+        ctxNext.fillStyle = getColor(id);
+        ctxNext.fillRect(x * size, y * size, size, size);
+        ctxNext.strokeStyle = "black";
+        ctxNext.strokeRect(x * size, y * size, size, size);
+      }
+    }
+  }
+}
+
+/**
+ * Retourne une couleur pour une pièce selon son ID.
+ * 1 = I, 2 = J, 3 = L, 4 = O, 5 = S, 6 = T, 7 = Z
+ */
+function getColor(id: number): string {
+  const colors = [
+    "cyan",    // I
+    "blue",    // J
+    "orange",  // L
+    "yellow",  // O
+    "green",   // S
+    "purple",  // T
+    "red"      // Z
+  ];
+
+  // Sécurité : renvoie "grey" si l'ID est invalide
+  return id > 0 && id <= colors.length ? colors[id - 1] : "grey";
 }
