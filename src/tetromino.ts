@@ -3,13 +3,10 @@ export type Matrix = number[][];
 export type Tetromino = {
   matrix: Matrix;
   color: string;
-  type: string; // nom de la pièce : I, J, L, O, S, T, Z
+  type: string; 
 };
 
-/**
- * Liste des différentes pièces Tetris.
- * Chaque pièce est une matrice (0 = vide, 1 = rempli).
- */
+
 const TETROMINOS: Tetromino[] = [
   { type: "I", matrix: [[1, 1, 1, 1]], color: "cyan" },
   { type: "J", matrix: [[1, 0, 0], [1, 1, 1]], color: "blue" },
@@ -20,17 +17,13 @@ const TETROMINOS: Tetromino[] = [
   { type: "Z", matrix: [[1, 1, 0], [0, 1, 1]], color: "red" }
 ];
 
-/**
- * Renvoie une pièce aléatoire parmi la liste.
- */
+
 export function randomTetromino(): Tetromino {
   const index = Math.floor(Math.random() * TETROMINOS.length);
-  return JSON.parse(JSON.stringify(TETROMINOS[index])); // copie pour éviter les mutations
+  return JSON.parse(JSON.stringify(TETROMINOS[index]));
 }
 
-/**
- * Fait tourner une pièce (90° dans le sens horaire).
- */
+
 export function rotate(matrix: Matrix): Matrix {
   const size = matrix.length;
   const rotated: Matrix = [];

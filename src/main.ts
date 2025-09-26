@@ -4,22 +4,19 @@ import { drawGrid, drawPiece, drawNext } from "./render";
 const canvas = document.getElementById("tetris") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
-// Taille d'une case (pixels)
 const BLOCK_SIZE = 30;
 
-// Dimensions du plateau en cases
+
 const ROWS = 20;
 const COLS = 10;
 
-// Initialisation de l'état du jeu
+
 let state = initGame(ROWS, COLS);
 
 let lastTime = 0;
 let dropCounter = 0;
 
-/**
- * Boucle principale du jeu (appelée via requestAnimationFrame).
- */
+
 function update(time = 0) {
   const deltaTime = time - lastTime;
   lastTime = time;
@@ -37,20 +34,16 @@ function update(time = 0) {
   requestAnimationFrame(update);
 }
 
-/**
- * Dessine tout l’écran de jeu (grille, pièce active, prochaine pièce, score...).
- */
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Dessin de la grille et de la pièce active
+
   drawGrid(ctx, state.grid, BLOCK_SIZE);
   drawPiece(ctx, state.currentPiece, state.position, BLOCK_SIZE);
 
-  // Affichage de la prochaine pièce
   drawNext(state.nextPiece, BLOCK_SIZE);
 
-  // Score, lignes et niveau
   const scoreEl = document.getElementById("score")!;
   const linesEl = document.getElementById("lines")!;
   const levelEl = document.getElementById("level")!;
@@ -58,7 +51,6 @@ function draw() {
   linesEl.textContent = state.linesCleared.toString();
   levelEl.textContent = state.level.toString();
 
-  // Affichage Game Over
   if (state.gameOver) {
     ctx.fillStyle = "rgba(0,0,0,0.7)";
     ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 80);
@@ -70,9 +62,7 @@ function draw() {
   }
 }
 
-/**
- * Gestion des touches clavier pour contrôler la pièce.
- */
+
 document.addEventListener("keydown", (event) => {
   if (state.gameOver) return;
 
@@ -101,16 +91,13 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-/**
- * Redémarre la partie quand on clique sur le bouton "Restart".
- */
+
 document.getElementById("restart")?.addEventListener("click", () => {
   state = initGame(ROWS, COLS);
 });
 
-/**
- * Démarrage du jeu.
- */
+// On peut démarrer le game
+
 canvas.width = COLS * BLOCK_SIZE;
 canvas.height = ROWS * BLOCK_SIZE;
 update();

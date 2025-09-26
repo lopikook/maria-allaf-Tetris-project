@@ -8,7 +8,6 @@
   canvas { background:#111; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.6); }
   .panel { background:var(--panel); color:#222; padding:12px; border-radius:8px; width:220px; box-shadow:0 6px 18px rgba(0,0,0,0.2); }
   .panel ul { padding-left:18px; }
-  .status { color:#c00; margin-top:8px; min-height:20px; }
+  .status { color:rgb(183, 82, 161); margin-top:8px; min-height:20px; }
   button { margin-top:8px; padding:6px 10px; border-radius:6px; border:none; background:var(--accent); color:white; cursor:pointer; }
-  
   
