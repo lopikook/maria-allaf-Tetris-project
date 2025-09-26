@@ -1,7 +1,7 @@
 /**
  * Faut créer une grille vide qui va etre remplie de 0
- * @param rows nombre de lignes
- * @param cols nombre de colonnes
+ * @param rows le nombre de lignes
+ * @param cols cest le nombre de colonnes
  */
 export function createGrid(rows: number, cols: number): number[][] {
     return Array.from({ length: rows }, () => Array(cols).fill(0));
