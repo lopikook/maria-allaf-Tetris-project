@@ -1,7 +1,7 @@
 # Jeu Tetris - Projet TypeScript
 
 Implémentation du jeu **Tetris**.
-Ce projet a été développé dans le cadre du cours d'**Algorithmie Avancée** (2ᵉ année BAC+2)* proposé par [Akram BOUKHERS] et met en pratique plusieurs notions essentielles :  
+Ce projet a été développé dans le cadre du cours d'**Algorithmie Avancée** (2ᵉ année BAC+2) proposé par [Akram BOUKHERS] et met en pratique plusieurs notions essentielles :  
 - manipulation de **matrices 2D**  
 - utilisation de **structures de données**  
 - gestion d’événements et de la **boucle de jeu**  
